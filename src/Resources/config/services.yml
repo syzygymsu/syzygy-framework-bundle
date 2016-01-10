@@ -1,5 +1,5 @@
 parameters:
-  syzygy.mail.composer.class: Syzygy\FrameworkBundle\Mail\Composer
+  syzygy.mail.composer.class: "Syzygy\FrameworkBundle\Mail\Composer"
   mail_from: ""
   mail_subject: ""
   mail_global_vars: []
@@ -7,7 +7,7 @@ parameters:
 services:
   syzygy.mail.composer:
     class: %syzygy.mail.composer.class%
-    arguments: [@mailer, @twig]
+    arguments: ["@mailer", "@twig"]
     calls:
       - [setDefaultFrom, [%mail_from%]]
       - [setDefaultSubject, [%mail_subject%]]
