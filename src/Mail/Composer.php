@@ -42,8 +42,8 @@ class Composer {
 	 * Attachments with named keys could be referred in template (e.g. embedded images).
 	 * Common way of creating attachment objects is by calling \Swift_Attachment::from_file($file_name).
 	 * @param string $templateName Identifier of a view to use as template.
-	 * @param array $data Variables to use in template.
-	 * @param array $attachments Attachments to attach. Named could be addressed as variables.
+	 * @param array $vars Variables to use in template.
+	 * @param \Swift_Attachment[] $attachments Attachments to attach. Named could be addressed as variables.
 	 * @return \Swift_Message
 	 */
 	public function composeFromTemplate($templateName, $vars = array(), $attachments = array()) {
@@ -57,6 +57,7 @@ class Composer {
 			if(is_numeric($k)) {
 				$message->attach($v);
 			} else {
+				$v->setId($v->getId()); // make sure Content-ID header is set
 				$data[$k] = $message->embed($v);
 			}
 		}
