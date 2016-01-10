@@ -38,12 +38,11 @@ class Composer {
 
 	/**
 	 * Fills in mail template.
-	 * Attachments with numeric keys are just regular attachments.
-	 * Attachments with named keys could be referred in template (e.g. embedded images).
-	 * Common way of creating attachment objects is by calling \Swift_Attachment::from_file($file_name).
+	 * Attachments with numeric keys are just regular attachments. Use createAttachedFile to create them.
+	 * Attachments with named keys could be referred in template (e.g. embedded images). Use createEmbeddedFile to create them.
 	 * @param string $templateName Identifier of a view to use as template.
 	 * @param array $vars Variables to use in template.
-	 * @param \Swift_Attachment[] $attachments Attachments to attach. Named could be addressed as variables.
+	 * @param \Swift_Mime_MimeEntity[] $attachments Entities to attach. Named could be addressed as variables.
 	 * @return \Swift_Message
 	 */
 	public function composeFromTemplate($templateName, $vars = array(), $attachments = array()) {
@@ -57,7 +56,6 @@ class Composer {
 			if(is_numeric($k)) {
 				$message->attach($v);
 			} else {
-				$v->setId($v->getId()); // make sure Content-ID header is set
 				$data[$k] = $message->embed($v);
 			}
 		}
@@ -65,6 +63,14 @@ class Composer {
 		$this->populateMessage($message, $templateContent, $data);
 
 		return $message;
+	}
+
+	public function createAttachedFile($filePath) {
+		return \Swift_Attachment::fromPath($filePath);
+	}
+
+	public function createEmbeddedFile($filePath) {
+		return \Swift_EmbeddedFile::fromPath($filePath);
 	}
 
 	/**
